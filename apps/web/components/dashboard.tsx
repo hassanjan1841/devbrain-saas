@@ -140,10 +140,17 @@ export default function Dashboard() {
           <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-sm text-slate-400">
             CLI flow:
             <pre className="mt-3 text-xs text-slate-300">
+              # Local (no global install)
               npm run cli -- login --email demo@devbrain.ai --password password123{'\n'}
               npm run cli -- init{'\n'}
               npm run cli -- remember "Implemented VAT logic in CheckoutService"{'\n'}
-              npm run cli -- ask "Where do I calculate VAT?"
+              npm run cli -- ask "Where do I calculate VAT?"{'\n'}
+              {'\n'}
+              # Optional: global devbrain CLI{'\n'}
+              npm run build --workspace @devbrain/cli{'\n'}
+              npm link --workspace @devbrain/cli{'\n'}
+              devbrain login --email demo@devbrain.ai --password password123{'\n'}
+              devbrain init
             </pre>
           </div>
         </section>

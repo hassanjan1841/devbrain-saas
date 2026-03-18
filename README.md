@@ -148,6 +148,10 @@ Errors:
 
 ## CLI usage
 
+There are **two ways** to use the DevBrain CLI.
+
+### Option A – Monorepo-local (no global install)
+
 Login and persist a token:
 
 ```bash
@@ -177,6 +181,29 @@ Optional code/docs ingestion:
 ```bash
 npm run cli -- ingest --code . --notes ./docs
 ```
+
+### Option B – Global `devbrain` command
+
+If you prefer a clean global command like `devbrain login` instead of `npm run cli -- login`, you can link the CLI globally from this repo:
+
+```bash
+# From the repo root
+npm run build --workspace @devbrain/cli
+npm link --workspace @devbrain/cli
+```
+
+After that, you can use:
+
+```bash
+devbrain login --email demo@devbrain.ai --password password123
+devbrain init
+devbrain remember "Implemented VAT for EU orders in CheckoutService with edge cases X and Y."
+devbrain ask "Where do I calculate VAT for EU orders and what edge cases did I handle?"
+# Optional
+devbrain ingest --code . --notes ./docs
+```
+
+Use **Option A** in CI/monorepo scripts, and **Option B** on your local machine for a nicer DX.
 
 ## Deployment notes
 
@@ -217,3 +244,58 @@ npm run cli -- init
 npm run cli -- remember "your memory"
 npm run cli -- ask "your question"
 ```
+
+## Using DevBrain with AI coding agents (Codex, Claude Code, Amp, etc.)
+
+DevBrain is designed to work as a **shared memory backend** for any AI coding agent or CLI tool.
+
+### Pattern 1 – After agent run: auto-remember
+
+When an agent finishes a task in a repo, save a memory automatically.
+
+Example script (run in CI or after a successful run):
+
+```bash
+# Summarize what changed (pseudocode – replace with your own summary logic)
+SUMMARY="Refactored checkout VAT logic in src/checkout.ts. Handled EU digital goods + B2B invoices."
+
+# Store in the current workspace
+devbrain remember "$SUMMARY"
+```
+
+You can call this from:
+- Codex / Claude Code / Amp run scripts
+- GitHub Actions workflows
+- Local scripts you use to wrap agent runs
+
+### Pattern 2 – Before agent run: ask DevBrain for context
+
+Before starting an agent on a repo, fetch relevant context and inject it into the prompt:
+
+```bash
+CONTEXT=$(devbrain ask "What should I know before changing the billing/checkout logic?")
+
+# Then pass $CONTEXT into your agent's system / preamble prompt.
+```
+
+For example, a wrapper script might:
+
+1. Call `devbrain ask "What are the known edge cases in auth?"`
+2. Prepend that answer to the Codex or Claude Code prompt
+3. Let the agent work with that context.
+
+### Pattern 3 – Per-repo workspace linking
+
+In each repo:
+
+```bash
+# One-time setup
+devbrain login --email you@example.com --password ...
+devbrain init  # choose or create a workspace for this repo
+
+# From now on, remember/ask in this repo are tied to that workspace
+devbrain remember "Implemented feature X with tradeoffs A/B."
+devbrain ask "Where did I implement feature X and what did I decide about A/B?"
+```
+
+Hook these into your agent workflows so every automated change can write to / read from the same workspace.
