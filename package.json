@@ -1,0 +1,27 @@
+{
+  "name": "devbrain-saas",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && concurrently \"npm run dev --workspace @devbrain/api\" \"npm run dev --workspace @devbrain/web\"",
+    "dev:web": "npm run dev --workspace @devbrain/web",
+    "dev:api": "npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && npm run dev --workspace @devbrain/api",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:generate": "npm run prisma:generate --workspace @devbrain/db",
+    "db:migrate": "npm run prisma:migrate --workspace @devbrain/db",
+    "db:seed": "npm run prisma:seed --workspace @devbrain/db",
+    "cli": "npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && npm run dev --workspace @devbrain/cli --"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "npm": ">=10.0.0"
+  }
+}

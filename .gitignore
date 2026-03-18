@@ -1,0 +1,14 @@
+node_modules
+.next
+dist
+build
+coverage
+.env
+.env.local
+.env.production
+.prisma
+*.log
+.DS_Store
+apps/web/.next
+apps/api/dist
+packages/*/dist
