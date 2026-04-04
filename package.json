@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && concurrently \"npm run dev --workspace @devbrain/api\" \"npm run dev --workspace @devbrain/web\"",
+    "dev": "node api.js && npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && concurrently \"npm run dev --workspace @devbrain/api\" \"npm run dev --workspace @devbrain/web\"",
     "dev:web": "npm run dev --workspace @devbrain/web",
     "dev:api": "npm run build --workspace @devbrain/db && npm run build --workspace @devbrain/brain-core && npm run dev --workspace @devbrain/api",
-    "build": "npm run build --workspaces",
+    "build": "node api.js && npm run build --workspaces",
     "lint": "npm run lint --workspaces --if-present",
     "db:generate": "npm run prisma:generate --workspace @devbrain/db",
     "db:migrate": "npm run prisma:migrate --workspace @devbrain/db",
